@@ -1,0 +1,22 @@
+name: Validate on PR
+
+on:
+  pull_request
+
+jobs:
+  install-dependencies-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      - uses: actions/cache@v2
+        id: node-modules
+        with:
+          path: ./node_modules
+          key: node_modules-${{ hashFiles('./yarn.lock') }}
+          restore-keys: node_modules-${{ hashFiles('./yarn.lock') }}
+      - run: yarn install
+      - name: Yarn lint
+        run: yarn lint
