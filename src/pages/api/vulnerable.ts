@@ -4,12 +4,12 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
   ) {
-    const url = req.query.url
-    if(typeof(url) !== 'string') {
-        res.status(400).send({ message: 'Url inválido'})
+    const id = req.query.id
+    if(typeof(id) !== 'string') {
+        res.status(400).send({ message: 'Id inválido'})
         return
     }
-    const result = await fetch(url);
+    const result = await fetch(`https://somedomain.andreluizmelo.com/products/${id}`);
     const jsonResult = await result.json()
     res.status(200).json({ fetchResult: jsonResult })
   }
