@@ -22,6 +22,7 @@ export default async function handler(
       if (err) throw err;
       
     });
-    const [results] = await con.execute(`SELECT * FROM products WHERE id = ${id}`, );
+    const sql = `SELECT * FROM products WHERE id = ${id}`
+    const [results] = await con.execute(sql);
     res.status(200).json({ fetchResult: JSON.stringify(results) })
   }
