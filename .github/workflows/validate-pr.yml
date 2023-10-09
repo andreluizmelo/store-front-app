@@ -22,3 +22,19 @@ jobs:
         run: yarn lint
       - name: Unit tests
         run: yarn test
+      - name: Yarn build
+        run: yarn build
+        env:
+          NODE_ENV: production
+      - name: Build Image
+        run: |
+          docker build -t andreluizmelo/front-store-app:${{ github.sha }} .
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'andreluizmelo/front-store-app:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
