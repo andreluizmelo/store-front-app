@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next/dist/shared/lib/utils";
+const mysql = require('mysql2/promise');
+
 
 export default async function handler(
     req: NextApiRequest,
@@ -9,12 +11,17 @@ export default async function handler(
         res.status(400).send({ message: 'Id inválido'})
         return
     }
-    const host = req.query.host
-    if(typeof(host) !== 'string') {
-        res.status(400).send({ message: 'host inválido'})
-        return
-    }
-    const result = await fetch(`https://${host}/products/${id}`);
-    const jsonResult = await result.json()
-    res.status(200).json({ fetchResult: jsonResult })
+    let con = await mysql.createConnection({
+      host: "database.andreluizmelo.com",
+      user: "username",
+      password: "password",
+      database: 'test',
+      rowsAsArray: true
+    });
+    con.connect(function(err: any) {
+      if (err) throw err;
+      
+    });
+    const [results] = await con.execute(`SELECT * FROM products WHERE id = ${id}`, );
+    res.status(200).json({ fetchResult: JSON.stringify(results) })
   }
